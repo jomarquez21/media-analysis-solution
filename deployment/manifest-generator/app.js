@@ -79,5 +79,8 @@ for (let i = 0; i < _filelist.length; i++) {
     _manifest.files.push(_filelist[i].replace(`${args.target}/`, ''));
 }
 
-fs.writeFileSync(args.output, JSON.stringify(_manifest, null, 4));
+fs.writeFileSync(args.output, JSON.stringify(_manifest, null, 4), function(err, result) {
+     if(err) console.log('error', err);
+});
+
 console.log(`Manifest file ${args.output} generated.`);
