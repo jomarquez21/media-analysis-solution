@@ -1,18 +1,24 @@
-
-
-html * {
-	font-family: AmazonEmberBold,Helvetica Neue Bold,Helvetica Neue,Helvetica,Arial,sans-serif !important;
+.input-file {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  padding: 0;
+  opacity: 0;
+  cursor: pointer;
 }
 
-a:hover {
-  color: #FF9900;
+.pointer {
+  cursor: pointer;
 }
 
-a {
-  color: #E1E4EA;
+.font-size--18 {
+  font-size: 18px;
 }
 
-.bg-dark {
-    background-color: #31465F !important;
+.font-size--35 {
+  font-size: 35px;
 }
 

@@ -10,6 +10,7 @@
     "aws-amplify": "1.2.4",
     "aws-amplify-react": "2.5.4",
     "bootstrap": "4.3.1",
+    "font-awesome": "^4.7.0",
     "react": "16.2.0",
     "react-bootstrap": "0.32.1",
     "react-dom": "16.2.1",
