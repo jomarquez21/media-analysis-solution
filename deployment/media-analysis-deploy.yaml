@@ -411,7 +411,7 @@ Resources:
             MemorySize: 256
             Environment:
                 Variables:
-                    CONFIDENCE_SCORE: '0'
+                    CONFIDENCE_SCORE: '80'
                     DOMAIN_ENDPOINT: !GetAtt MediaAnalysisStorageStack.Outputs.EsCluster
                     ES_INDEX: media-analysis
                     ES_VERSION: !Ref Version
