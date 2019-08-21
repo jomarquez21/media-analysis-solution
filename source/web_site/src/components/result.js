@@ -8,6 +8,7 @@ import ImageResults from './imageresults';
 import AudioResults from './audioresults';
 import VideoResults from './videoresults';
 import TranscriptTab from './TranscriptTab';
+import SrtTab from './SrtTab';
 const uuidv4 = require('uuid/v4');
 
 
@@ -41,7 +42,8 @@ class Result extends Component {
       video_indv_known_faces: null,
       known_face_video: {},
       captions: {},
-      error_status: false
+      error_status: false,
+      srt: null,
 
     }
     this.getCelebs = this.getCelebs.bind(this);
@@ -102,6 +104,7 @@ class Result extends Component {
           self.getEntities();
           self.getPhrases();
           self.getCaptions();
+          self.getStr();
         }
         else if (response.details.file_type === 'mp3' || response.details.file_type === 'wav' || response.details.file_type === 'flac' || response.details.file_type === 'wave') {
           self.getTranscript();
@@ -504,6 +507,21 @@ class Result extends Component {
       });
   }
 
+  getStr() {
+    var self = this;
+    var transcript_path = ['/lookup', this.props.match.params.objectid, 'srt'].join('/');
+    API.get('MediaAnalysisApi', transcript_path, {})
+      .then(function (data) {
+        // falta saber como regresa data para extraer el srtUrl.
+        console.log(data);
+
+        // self.setState({ srt });
+      })
+      .catch(function (err) {
+        //console.log(err);
+      });
+  }
+
   getEntities() {
     var self = this;
     var entities_path = ['/lookup', this.props.match.params.objectid, 'entities'].join('/');
@@ -591,6 +609,9 @@ class Result extends Component {
 
     const transcript = null === this.state.transcripts ? <Loading /> : <TranscriptTab transcript={this.state.transcripts} />
 
+    console.log(this.state.srt)
+    const srt = null === this.state.srt ? <Loading />: <SrtTab downloadUrl={this.state.srt} />;
+
     if (this.state.file_type === 'png' || this.state.file_type === 'jpg' || this.state.file_type === 'jpeg') {
       return (
         <div>
@@ -613,7 +634,7 @@ class Result extends Component {
       return (
         <div>
           <Alert name="error" color="danger" isOpen={this.state.error_status} toggle={this.Dismiss}>Error</Alert>
-          <VideoResults phrases={phrases} entities={entities} captions={this.state.captions} transcript={transcript} individualcelebs={this.state.video_indv_celebs} allfaces={this.state.face_video} attributes={this.state.att_list} celebvideo={this.state.celeb_video} mediafile={this.state.media_file} filename={this.state.filename} filetype={this.state.file_type} persons={this.state.persons} labels={labels} individualknownfaces={this.state.video_indv_known_faces} allknownfaces={this.state.known_face_video} />
+          <VideoResults phrases={phrases} srt={srt} entities={entities} captions={this.state.captions} transcript={transcript} individualcelebs={this.state.video_indv_celebs} allfaces={this.state.face_video} attributes={this.state.att_list} celebvideo={this.state.celeb_video} mediafile={this.state.media_file} filename={this.state.filename} filetype={this.state.file_type} persons={this.state.persons} labels={labels} individualknownfaces={this.state.video_indv_known_faces} allknownfaces={this.state.known_face_video} />
         </div>
       );
     }

@@ -259,6 +259,7 @@ class VideoResults extends Component {
     var phrases = this.props.phrases;
     var entities = this.props.entities;
     var transcript = this.props.transcript;
+    var srt = this.props.srt;
     // var translate = this.props.translate;
 
     var atts = null === this.props.attributes ? <Loading /> : 0 === this.props.attributes.length ? 'Facial attributes unavailable' : this.props.attributes.map((att, index) => {
@@ -287,6 +288,17 @@ class VideoResults extends Component {
 
       return lastValue;
     }, []);
+
+    const translate = {
+      en: 'English',
+      es: 'Spanish',
+      fr: 'Frances',
+      zh: 'Chinese',
+      tr: 'Turkish',
+      pt: 'Portuguese',
+    };
+
+    console.warn(this.state.activeTab);
 
     return (
       <Container>
@@ -390,6 +402,9 @@ class VideoResults extends Component {
                 <NavItem>
                   <NavLink active={this.state.activeTab === "phrases"} onClick={() => { this.tabToggle('phrases'); }}>Phrases</NavLink>
                 </NavItem>
+                <NavItem>
+                  <NavLink active={this.state.activeTab === "str"} onClick={() => { this.tabToggle('str'); }}>Srt</NavLink>
+                </NavItem>
               </Nav>
               <TabContent activeTab={this.state.activeTab}>
                 <TabPane tabId="labels">
@@ -438,6 +453,13 @@ class VideoResults extends Component {
                   <Row>
                     <Col align="center">
                       {transcript}
+                    </Col>
+                  </Row>
+                </TabPane>
+                <TabPane tabId="str">
+                  <Row>
+                    <Col align="center">
+                      {srt}
                     </Col>
                   </Row>
                 </TabPane>
