@@ -176,7 +176,7 @@ class Browse extends Component {
 				<div>
 					<Alert name="noresults" color="warning" isOpen={this.state.noresults} toggle={this.Dismiss}>
 						Search returned no results
-	        </Alert>
+					</Alert>
 					<Alert name="error" color="danger" isOpen={this.state.error} toggle={this.Dismiss}>
 						Search Error
 					</Alert>
@@ -214,7 +214,7 @@ class Browse extends Component {
 					</Form>
 					<div className="pt-2">
 						<button className="btn btn-primary" onClick={this.toggleModal}>Add Media</button>
-    				</div>
+						</div>
 				</div>
 				<Container>
 					<Row>
@@ -228,7 +228,6 @@ class Browse extends Component {
 					<h6 align="right">Viewing {((this.state.current_page - 1) * 6) + media_cards.length} of {this.state.result_count} results</h6>
 				</div>
 			</Container>
-
 		);
 	}
 }
