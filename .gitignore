@@ -84,3 +84,5 @@ source/web_site/build/**/*
 # System Files
 **/.DS_Store
 **/.vscode
+
+**/.idea

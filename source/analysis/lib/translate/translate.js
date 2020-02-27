@@ -85,7 +85,7 @@ let translate = (function () {
     return new Promise((resolve, reject) => {
       if ('' === source_text) {
         const results = allLanguages.reduce((lastValue, language) => {
-          return {...lastValue, [language]: {transcripts: [{transcript: ''}], items: []}}
+          return {...lastValue, [language]: {transcripts: [{transcript: ''}], items: []}};
         }, {});
 
         resolve(results);
@@ -100,7 +100,7 @@ let translate = (function () {
           });
       }
     });
-  }
+  };
 
   const processLanguage = function (currentLanguage, language_code, source_text, transcriptResults) {
     return new Promise((resolve, reject) => {
@@ -177,16 +177,59 @@ let translate = (function () {
   };
 
   const getTranslatedText = function (params) {
+
+    var phrases = new Array();
+    var base = 0;
+    var source_text_splited = params.Text.split(" ");
+
+    for (var i = 0; i < Math.trunc(source_text_splited.length / 500) + 1; i++) {
+
+      for (var j = 0; j < 500; j++){
+
+        if (typeof source_text_splited[base + j] === "undefined")
+          break;
+
+        if (j == 0)
+          phrases[i] = source_text_splited[base + j];
+        else
+          phrases[i] += " " + source_text_splited[base + j];
+      }
+
+      base = base + 499
+    }
+
     const translate = new AWS.Translate();
-    return new Promise((resolve, reject) => {
-      translate.translateText(params, function (err, data) {
-        if (err) {
-          reject(err);
+
+    var phrase_promise = phrases.map((phrase) => {
+      return new Promise((resolve, reject) => {
+
+        const translate_params = {
+          SourceLanguageCode: params.SourceLanguageCode,
+          TargetLanguageCode: params.TargetLanguageCode,
+          Text: phrase
         }
 
-        resolve(data);
+        translate.translateText(translate_params, function (err, data) {
+          if (err) {
+            reject(err);
+          }
+
+          resolve(data);
+        });
       });
     });
+
+    return new Promise((resolve, reject) => {
+      Promise.all(phrase_promise)
+        .then((translated_phrases) => {
+          var translated_text = translated_phrases.map((translated_phrase) => translated_phrase.TranslatedText).join(" ");
+          resolve ({
+            TranslatedText: translated_text,
+            SourceLanguageCode: params.SourceLanguageCode,
+            TargetLanguageCode: params.TargetLanguageCode
+          });
+        });
+     });
   };
 
   const getTranslatedTextItem = function (item, SourceLanguageCode, TargetLanguageCode) {
