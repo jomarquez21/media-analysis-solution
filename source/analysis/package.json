@@ -8,6 +8,7 @@
     "version": "0.0.1",
     "private": true,
     "dependencies": {
+        "aws-transcription-to-srt": "^1.0.5",
         "uuid": "*",
         "request": "*",
         "elasticsearch": "*",
