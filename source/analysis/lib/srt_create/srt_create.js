@@ -45,7 +45,7 @@ let srt_create = (function () {
   srt_create.prototype.startConvertStr = function (event_info, cb) {
     console.log('Executing SRT creation');
 
-    const key = event_info.results.transcript.key;
+    const key = event_info.translate.key;
 
     console.log('Key:: ', key);
 
@@ -61,16 +61,17 @@ let srt_create = (function () {
 
       const transcript = JSON.parse(data.Body.toString('utf-8'));
 
-      convertTsToSrt(transcript)
+      for (const lang in transcript.results) {
+        convertTsToSrt({results: transcript.results[lang]})
         .then((results) => {
-          storageS3(event_info, results, cb);
+          storageS3(event_info, "WEBVTT\n\n"+results, cb, lang);
         });
-
+      }
     });
   };
 
-  const storageS3 = function (event_info, srt, cb) {
-    let text_key = ['private', event_info.owner_id, 'media', event_info.object_id, 'results', 'transcript.srt'].join('/');
+  const storageS3 = function (event_info, srt, cb, lang) {
+    let text_key = ['private', event_info.owner_id, 'media', event_info.object_id, 'results', 'transcript-'+lang+'.srt'].join('/');
 
     let s3_params = {
       Bucket: s3Bucket,
@@ -94,7 +95,6 @@ let srt_create = (function () {
     let s3 = new AWS.S3();
     s3.getObject(params, function (err, data) {
       if (err) {
-        console.log('Error getting transcript file.', err);
         return cb(err, null);
       } else {
         return cb(null, data);
