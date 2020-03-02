@@ -86,7 +86,7 @@ let srt_create = (function () {
         return cb(err, null);
       }
 
-      const text_response = {'key': text_key, 'status': "COMPLETE"};
+      const text_response = {'key': text_key, 'status': 'COMPLETE'};
 
       return cb(null, text_response);
     });
@@ -96,7 +96,7 @@ let srt_create = (function () {
     let s3 = new AWS.S3();
     s3.getObject(params, function (err, data) {
       if (err) {
-        console.log(err);
+        console.log('Error getting transcript file.', err);
         return cb(err, null);
       } else {
         return cb(null, data);

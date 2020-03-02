@@ -208,7 +208,7 @@ module.exports.respond = function(event, cb) {
                }
            });
        }
-       else if (event.lambda.service_name == 'srt'){
+       else if (event.lambda.service_name == 'srt_create'){
            srtConverter.respond(event, function(err, data) {
                if (err) {
                    return cb(err, null);
