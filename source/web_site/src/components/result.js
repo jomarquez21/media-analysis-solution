@@ -35,6 +35,7 @@ class Result extends Component {
       celeb_faces: [], //needed
       known_faces: [], //needed
       downloading: false,
+      subtitle: null,
       celeb_video: {},
       att_video: {},
       video_face_list: [],
@@ -105,6 +106,7 @@ class Result extends Component {
           self.getPhrases();
           self.getCaptions();
           self.getStr();
+          self.getSubtitle();
         }
         else if (response.details.file_type === 'mp3' || response.details.file_type === 'wav' || response.details.file_type === 'flac' || response.details.file_type === 'wave') {
           self.getTranscript();
@@ -522,6 +524,27 @@ class Result extends Component {
       });
   }
 
+  getSubtitle = () => {
+    const availableLanguages = ['en', 'es', 'fr', 'zh', 'tr', 'pt'];
+
+    const promises = availableLanguages.map((language) => {
+      const transcript_path = ['/lookup', this.props.match.params.objectid, `subtitle?lang=${language}`].join('/');
+      console.log(transcript_path);
+
+      return API.get('MediaAnalysisApi', transcript_path, {lang: language})
+    });
+
+    Promise.all(promises)
+      .then((responses) => {
+        const subtitle = responses.map((response, index) => {
+          return {src: response, kind: 'subtitles', srclang: availableLanguages[index]};
+        })
+        console.log(subtitle);
+
+        this.setState({subtitle});
+      });
+  }
+
   getEntities() {
     var self = this;
     var entities_path = ['/lookup', this.props.match.params.objectid, 'entities'].join('/');
@@ -640,7 +663,7 @@ class Result extends Component {
       return (
         <div>
           <Alert name="error" color="danger" isOpen={this.state.error_status} toggle={this.Dismiss}>Error</Alert>
-          <VideoResults phrases={phrases} srt={srt} entities={entities} captions={this.state.captions} transcript={transcript} individualcelebs={this.state.video_indv_celebs} allfaces={this.state.face_video} attributes={this.state.att_list} celebvideo={this.state.celeb_video} mediafile={this.state.media_file} filename={this.state.filename} filetype={this.state.file_type} persons={this.state.persons} labels={labels} individualknownfaces={this.state.video_indv_known_faces} allknownfaces={this.state.known_face_video} />
+          <VideoResults phrases={phrases} subtitle={this.state.subtitle} srt={srt} entities={entities} captions={this.state.captions} transcript={transcript} individualcelebs={this.state.video_indv_celebs} allfaces={this.state.face_video} attributes={this.state.att_list} celebvideo={this.state.celeb_video} mediafile={this.state.media_file} filename={this.state.filename} filetype={this.state.file_type} persons={this.state.persons} labels={labels} individualknownfaces={this.state.video_indv_known_faces} allknownfaces={this.state.known_face_video} />
         </div>
       );
     }
