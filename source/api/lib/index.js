@@ -112,6 +112,9 @@ module.exports.respond = function(event, cb) {
         else if (request.startsWith('captions')) {
             lookup_type = 'captions';
         }
+        else if (request.startsWith('subtitle')) {
+            lookup_type = 'subtitle';
+        }
         else {
             _response = buildOutput(500, INVALID_PATH_ERR);
             return cb(_response, null);

@@ -44,8 +44,9 @@ let lookup = (function() {
      * @param {string} owner_id - cognitoIdentityId of the requester
      * @param {int} page_num - result page number requested
      * @param {getDetails~requestCallback} cb - The callback that handles the response.
+     * @param {object} urlParams - URL parameters.
      */
-    lookup.prototype.getDetails = function(object_id, lookup_type, owner_id, page_num, cb) {
+    lookup.prototype.getDetails = function(object_id, lookup_type, owner_id, page_num, cb, urlParams = {}) {
 
       console.log('getting: \'' + lookup_type + '\' for \'' +object_id+ '\'');
 
@@ -576,6 +577,28 @@ let lookup = (function() {
               }
           });
       }
+      else if (lookup_type == 'subtitle') {
+        const subtitleFilename = 'transcript-'+urlParams['lang']+'.json';
+
+        let s3_params = {
+          Bucket: s3Bucket,
+          Key: ['private', owner_id, 'media', object_id, 'results', subtitleFilename].join('/')
+        };
+
+        retrieveData(s3_params, owner_id, object_id, 'subtitle', page_num, function(err, data) {
+            if (err) {
+              console.log(err);
+              return cb(err, null);
+            }
+            else {
+              console.log('Building subtitle output.');
+
+              const subtitle = data.Body.toString('utf-8');
+
+              return cb(null, subtitle);
+            }
+        });
+    }
       else if (lookup_type == 'persons') {
 
           let filename = 'persons.json';
