@@ -61,9 +61,7 @@ let srt_create = (function () {
 
       const transcript = JSON.parse(data.Body.toString('utf-8'));
 
-      const source_text = transcript.results.transcripts[0].transcript;
-
-      convertTsToSrt(source_text)
+      convertTsToSrt(transcript)
         .then((results) => {
           storageS3(event_info, results, cb);
         });
